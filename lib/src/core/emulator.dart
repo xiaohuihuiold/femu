@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 
 import '../logger/logger.dart';
-
+import '../ext/int_ext.dart';
 import 'core.dart';
 
 /// 模拟器状态
@@ -35,6 +37,14 @@ class Emulator {
     memory._emulator = this;
     cpu._emulator = this;
     reset();
+  }
+
+  /// 载入程序到内存
+  Future<void> load(int address, String path) async {
+    final data = await File(path).readAsBytes();
+    memory.writeAll(address, data);
+    logger.i('程序"$path"已载入至内存: ${address.toHexString()}'
+        '-${(address + data.length).toHexString()}');
   }
 
   /// 运行模拟器

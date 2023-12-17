@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:femu/src/logger/logger.dart';
-
+import '../../ext/bytes_ext.dart';
+import '../../logger/logger.dart';
 import '../core.dart';
 
 /// 内存
@@ -60,5 +60,75 @@ class Memory with EmulatorMixin {
   /// 设置int16类型数据
   void write16(int address, int value) {
     _memory.setInt16(address, value, Endian.little);
+  }
+
+  /// 获取uint32类型数据
+  int readU32(int address) {
+    return _memory.getUint32(address, Endian.little);
+  }
+
+  /// 设置uint32类型数据
+  void writeU32(int address, int value) {
+    _memory.setUint32(address, value, Endian.little);
+  }
+
+  /// 获取int32类型数据
+  int read32(int address) {
+    return _memory.getInt32(address, Endian.little);
+  }
+
+  /// 设置int32类型数据
+  void write32(int address, int value) {
+    _memory.setInt32(address, value, Endian.little);
+  }
+
+  /// 获取uint64类型数据
+  int readU64(int address) {
+    return _memory.getUint64(address, Endian.little);
+  }
+
+  /// 设置uint64类型数据
+  void writeU64(int address, int value) {
+    _memory.setUint64(address, value, Endian.little);
+  }
+
+  /// 获取int64类型数据
+  int read64(int address) {
+    return _memory.getInt64(address, Endian.little);
+  }
+
+  /// 设置int64类型数据
+  void write64(int address, int value) {
+    _memory.setInt64(address, value, Endian.little);
+  }
+
+  /// 获取float32类型数据
+  double readF32(int address) {
+    return _memory.getFloat32(address, Endian.little);
+  }
+
+  /// 设置float32类型数据
+  void writeF32(int address, double value) {
+    _memory.setFloat32(address, value, Endian.little);
+  }
+
+  /// 获取float64类型数据
+  double readF64(int address) {
+    return _memory.getFloat64(address, Endian.little);
+  }
+
+  /// 设置float64类型数据
+  void writeF64(int address, double value) {
+    _memory.setFloat64(address, value, Endian.little);
+  }
+
+  /// 获取多段数据
+  Uint8List readAll(int address, int length) {
+    return _memory.getUint8List(address, address + length);
+  }
+
+  /// 写入多段数据
+  void writeAll(int address, List<int> bytes, {int start = 0, int? end}) {
+    _memory.setUint8List(address, bytes, start: start, end: end);
   }
 }
