@@ -12,7 +12,7 @@ void main() {
         // 128MiB
         memory: Memory(size: 128 * 1024 * 1024),
       );
-      await emulator.load(0, './test/bin/add-addi.bin');
+      await emulator.load(0, './demos/riscv/add-addi.bin');
       await Future.delayed(const Duration(milliseconds: 400));
       emulator.run();
     },

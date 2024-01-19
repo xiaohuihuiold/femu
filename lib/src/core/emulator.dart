@@ -27,6 +27,11 @@ class Emulator {
 
   ValueListenable<EmulatorState> get state => _stateValue;
 
+  /// 载入地址
+  final _resetAddress = ValueNotifier<int>(0);
+
+  ValueListenable<int> get resetAddress => _resetAddress;
+
   /// CPU循环是否开启中
   bool _cpuRunning = false;
 
@@ -43,6 +48,7 @@ class Emulator {
   Future<void> load(int address, String path) async {
     final data = await File(path).readAsBytes();
     memory.writeAll(address, data);
+    _resetAddress.value = address;
     logger.i('程序"$path"已载入至内存: ${address.toHexString()}'
         '-${(address + data.length).toHexString()}');
   }

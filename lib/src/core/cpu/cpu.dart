@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import '../core.dart';
 
 /// 处理器
-abstract class Cpu with EmulatorMixin {
-  final CpuRegisters registers;
+abstract class Cpu<RegisterType extends CpuRegisters> with EmulatorMixin {
+  final RegisterType registers;
 
   Cpu({required this.registers});
 

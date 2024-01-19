@@ -38,8 +38,8 @@ class RISCVCpuRegisters extends CpuRegisters {
   final t5 = 0.rw;
   final t6 = 0.rw;
 
+  // x0-x31
   late final registers = [
-    pc,
     zero,
     ra,
     sp,
