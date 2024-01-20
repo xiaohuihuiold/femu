@@ -1,7 +1,103 @@
+import 'package:collection/collection.dart';
+
 import '../core/core.dart';
 
+/// OPCode工具
+class RISCVCpuOpcodes {
+  /// 指令映射
+  static final _mapping = _generateMapping();
+
+  static List<dynamic> _generateMapping() {
+    final list = List<dynamic>.filled(0x7f + 1, null);
+    final instructSet = RISCVInstructSet.values
+        .whereNot((element) => element.name == '_')
+        .toList();
+    for (final instruct in instructSet) {
+      final opcode = instruct.opcode;
+      final func3 = instruct.func3;
+      final func7 = instruct.func7;
+      if (func3 < 0) {
+        // 由opcode直接确定指令码
+        list[opcode] = instruct;
+      } else {
+        if (list[opcode] == null) {
+          list[opcode] = List<dynamic>.filled(0x07 + 1, null);
+        }
+        final sub = list[opcode];
+        if (func7 < 0) {
+          // 由opcode+func3确定指令码
+          sub[func3] = instruct;
+        } else {
+          // 由opcode+func3+func7确定指令码
+          if (sub[func3] == null) {
+            sub[func3] = <int, dynamic>{};
+          }
+          final sub1 = sub[func3];
+          sub1[func7] = instruct;
+        }
+      }
+    }
+    return list;
+  }
+
+  /// 获取指令
+  static RISCVInstructSet? getOp(int code) {
+    final opcode = code & 0x7f;
+    final func3 = (code >> 12) & 0x07;
+    final func7 = (code >> 25) & 0x7f;
+    final value = _mapping[opcode];
+    if (value is RISCVInstructSet) {
+      return value;
+    } else if (value is List) {
+      if (func3 < 0) {
+        return null;
+      }
+      final sub = value[func3];
+      if (sub is RISCVInstructSet) {
+        return sub;
+      } else if (sub is Map) {
+        if (func7 < 0) {
+          return null;
+        }
+        final sub1 = sub[func7];
+        if (sub1 is RISCVInstructSet) {
+          return sub1;
+        }
+      }
+    }
+    return null;
+  }
+}
+
+/// 空的访问对象
+class NullReaderWriter implements ReaderWriter<int> {
+  const NullReaderWriter();
+
+  @override
+  int read() {
+    throw Exception('NullReader');
+  }
+
+  @override
+  void write(int value) {
+    throw Exception('NullWriter');
+  }
+}
+
 /// RISC-V指令码
-class RISCVCpuOpcode extends CpuOpcode {}
+class RISCVCpuOpcode extends CpuOpcode {
+  final RISCVInstructSet op;
+  final Writer<int> rd;
+  final Reader<int> rs1;
+  final Reader<int> rs2;
+
+  const RISCVCpuOpcode({
+    required this.op,
+    this.rd = const NullReaderWriter(),
+    this.rs1 = const NullReaderWriter(),
+    this.rs2 = const NullReaderWriter(),
+  });
+}
 
 /// 指令类型
 enum RISCVInstructSetFormat {
@@ -67,7 +163,7 @@ enum RISCVInstructSet {
   ecall('ecall', RISCVInstructSetFormat.i, 0x73, 0x00, 0x00),
   // --------
   ebreak('ebreak', RISCVInstructSetFormat.i, 0x73, 0x00, 0x01),
-  _0('0', RISCVInstructSetFormat.r, -1, 0, 0);
+  _0('_', RISCVInstructSetFormat.r, -1, 0, 0);
 
   final String name;
   final RISCVInstructSetFormat format;

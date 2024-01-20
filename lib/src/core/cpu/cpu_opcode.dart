@@ -1,2 +1,4 @@
 /// 指令解码
-abstract class CpuOpcode {}
+abstract class CpuOpcode {
+  const CpuOpcode();
+}

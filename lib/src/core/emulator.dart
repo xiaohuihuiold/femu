@@ -46,6 +46,7 @@ class Emulator {
 
   /// 载入程序到内存
   Future<void> load(int address, String path) async {
+    reset();
     final data = await File(path).readAsBytes();
     memory.writeAll(address, data);
     _resetAddress.value = address;
@@ -59,7 +60,6 @@ class Emulator {
       logger.w('模拟器正在运行中');
       return;
     }
-    reset();
     _stateValue.value = EmulatorState.running;
     logger.i('模拟器开始运行...');
     _startCPULoop();
