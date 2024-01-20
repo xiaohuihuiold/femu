@@ -1,3 +1,4 @@
+import 'package:femu/src/ext/int_ext.dart';
 import 'package:femu/src/logger/logger.dart';
 
 import '../core/core.dart';
@@ -82,5 +83,10 @@ class RISCVCpuRegisters extends CpuRegisters {
 
   void _writeZero(RWValue<int> rw) {
     rw.write(0);
+  }
+
+  @override
+  String toString() {
+   return'''zero:${zero.read().toHexString()},ra:${ra.read().toHexString()},sp:${sp.read().toHexString()},gp:${gp.read().toHexString()},tp:${tp.read().toHexString()},t0:${t0.read().toHexString()},t1:${t1.read().toHexString()},t2:${t2.read().toHexString()},s0:${s0.read().toHexString()},s1:${s1.read().toHexString()},a0:${a0.read().toHexString()},a1:${a1.read().toHexString()},a2:${a2.read().toHexString()},a3:${a3.read().toHexString()},a4:${a4.read().toHexString()},a5:${a5.read().toHexString()},a6:${a6.read().toHexString()},a7:${a7.read().toHexString()},s2:${s2.read().toHexString()},s3:${s3.read().toHexString()},s4:${s4.read().toHexString()},s5:${s5.read().toHexString()},s6:${s6.read().toHexString()},s7:${s7.read().toHexString()},s8:${s8.read().toHexString()},s9:${s9.read().toHexString()},s10:${s10.read().toHexString()},s11:${s11.read().toHexString()},t3:${t3.read().toHexString()},t4:${t4.read().toHexString()},t5:${t5.read().toHexString()},t6:${t6.read().toHexString()}''';
   }
 }

@@ -86,12 +86,14 @@ class NullReaderWriter implements ReaderWriter<int> {
 
 /// RISC-V指令码
 class RISCVCpuOpcode extends CpuOpcode {
+  final int code;
   final RISCVInstructSet op;
   final Writer<int> rd;
   final Reader<int> rs1;
   final Reader<int> rs2;
 
   const RISCVCpuOpcode({
+    required this.code,
     required this.op,
     this.rd = const NullReaderWriter(),
     this.rs1 = const NullReaderWriter(),

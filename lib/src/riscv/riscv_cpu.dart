@@ -4,8 +4,17 @@ import 'package:femu/src/logger/logger.dart';
 import '../core/core.dart';
 import 'riscv.dart';
 
+/// 执行指令
+typedef RISCVOpcodeExecutor = void Function(RISCVCpuOpcode opcode);
+
+RISCVOpcodeExecutor _defaultExecutor = (RISCVCpuOpcode opcode) {
+  throw Exception('未实现');
+};
+
 /// RISC-V处理器
 class RISCVCpu extends Cpu<RISCVCpuRegisters, RISCVCpuOpcode> {
+  late final _executors = _generateExecutor();
+
   Memory get memory => emulator.memory;
 
   RISCVCpu() : super(registers: RISCVCpuRegisters());
@@ -55,12 +64,71 @@ class RISCVCpu extends Cpu<RISCVCpuRegisters, RISCVCpuOpcode> {
         rd = registers.registers[(code >> 7) & 0x1f];
         break;
     }
-    return RISCVCpuOpcode(op: op, rd: rd, rs1: rs1, rs2: rs2);
+    return RISCVCpuOpcode(
+      code: code,
+      op: op,
+      rd: rd,
+      rs1: rs1,
+      rs2: rs2,
+    );
   }
 
   @override
   void execute(RISCVCpuOpcode opcode) {
-    logger.v(opcode.op.name);
+    _executors[opcode.op.index].call(opcode);
     registers.pc.write(registers.pc.read() + 4);
+    logger.v(registers);
+  }
+
+  List<RISCVOpcodeExecutor> _generateExecutor() {
+    final list = List<RISCVOpcodeExecutor>.filled(0x100, _defaultExecutor);
+    list[RISCVInstructSet.add.index] = _executeAdd;
+    list[RISCVInstructSet.sub.index] = _defaultExecutor;
+    list[RISCVInstructSet.xor.index] = _defaultExecutor;
+    list[RISCVInstructSet.or.index] = _defaultExecutor;
+    list[RISCVInstructSet.and.index] = _defaultExecutor;
+    list[RISCVInstructSet.sll.index] = _defaultExecutor;
+    list[RISCVInstructSet.srl.index] = _defaultExecutor;
+    list[RISCVInstructSet.sra.index] = _defaultExecutor;
+    list[RISCVInstructSet.slt.index] = _defaultExecutor;
+    list[RISCVInstructSet.sltu.index] = _defaultExecutor;
+    list[RISCVInstructSet.addi.index] = _executeAddi;
+    list[RISCVInstructSet.xori.index] = _defaultExecutor;
+    list[RISCVInstructSet.ori.index] = _defaultExecutor;
+    list[RISCVInstructSet.andi.index] = _defaultExecutor;
+    list[RISCVInstructSet.slli.index] = _defaultExecutor;
+    list[RISCVInstructSet.srli.index] = _defaultExecutor;
+    list[RISCVInstructSet.srai.index] = _defaultExecutor;
+    list[RISCVInstructSet.slti.index] = _defaultExecutor;
+    list[RISCVInstructSet.sltiu.index] = _defaultExecutor;
+    list[RISCVInstructSet.lb.index] = _defaultExecutor;
+    list[RISCVInstructSet.lh.index] = _defaultExecutor;
+    list[RISCVInstructSet.lw.index] = _defaultExecutor;
+    list[RISCVInstructSet.lbu.index] = _defaultExecutor;
+    list[RISCVInstructSet.lhu.index] = _defaultExecutor;
+    list[RISCVInstructSet.sb.index] = _defaultExecutor;
+    list[RISCVInstructSet.sh.index] = _defaultExecutor;
+    list[RISCVInstructSet.sw.index] = _defaultExecutor;
+    list[RISCVInstructSet.beq.index] = _defaultExecutor;
+    list[RISCVInstructSet.bne.index] = _defaultExecutor;
+    list[RISCVInstructSet.blt.index] = _defaultExecutor;
+    list[RISCVInstructSet.bge.index] = _defaultExecutor;
+    list[RISCVInstructSet.bltu.index] = _defaultExecutor;
+    list[RISCVInstructSet.bgeu.index] = _defaultExecutor;
+    list[RISCVInstructSet.jal.index] = _defaultExecutor;
+    list[RISCVInstructSet.jalr.index] = _defaultExecutor;
+    list[RISCVInstructSet.lui.index] = _defaultExecutor;
+    list[RISCVInstructSet.auipc.index] = _defaultExecutor;
+    list[RISCVInstructSet.ecall.index] = _defaultExecutor;
+    list[RISCVInstructSet.ebreak.index] = _defaultExecutor;
+    return list;
+  }
+
+  void _executeAdd(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() + opcode.rs2.read());
+  }
+
+  void _executeAddi(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() + ((opcode.code >> 20) & 0x0fff));
   }
 }
