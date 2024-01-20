@@ -106,6 +106,10 @@ class Emulator {
     _cpuRunning = true;
     try {
       while (state.value == EmulatorState.running) {
+        // 解码
+        final opcode = cpu.decode();
+        // 执行
+        cpu.execute(opcode);
         await Future.value();
       }
     } catch (e) {
