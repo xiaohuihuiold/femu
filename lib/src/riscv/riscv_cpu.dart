@@ -83,15 +83,15 @@ class RISCVCpu extends Cpu<RISCVCpuRegisters, RISCVCpuOpcode> {
   List<RISCVOpcodeExecutor> _generateExecutor() {
     final list = List<RISCVOpcodeExecutor>.filled(0x100, _defaultExecutor);
     list[RISCVInstructSet.add.index] = _executeAdd;
-    list[RISCVInstructSet.sub.index] = _defaultExecutor;
-    list[RISCVInstructSet.xor.index] = _defaultExecutor;
-    list[RISCVInstructSet.or.index] = _defaultExecutor;
-    list[RISCVInstructSet.and.index] = _defaultExecutor;
-    list[RISCVInstructSet.sll.index] = _defaultExecutor;
-    list[RISCVInstructSet.srl.index] = _defaultExecutor;
-    list[RISCVInstructSet.sra.index] = _defaultExecutor;
-    list[RISCVInstructSet.slt.index] = _defaultExecutor;
-    list[RISCVInstructSet.sltu.index] = _defaultExecutor;
+    list[RISCVInstructSet.sub.index] = _executeSub;
+    list[RISCVInstructSet.xor.index] = _executeXor;
+    list[RISCVInstructSet.or.index] = _executeOr;
+    list[RISCVInstructSet.and.index] = _executeAnd;
+    list[RISCVInstructSet.sll.index] = _executeSll;
+    list[RISCVInstructSet.srl.index] = _executeSrl;
+    list[RISCVInstructSet.sra.index] = _executeSra;
+    list[RISCVInstructSet.slt.index] = _executeSlt;
+    list[RISCVInstructSet.sltu.index] = _executeSltu;
     list[RISCVInstructSet.addi.index] = _executeAddi;
     list[RISCVInstructSet.xori.index] = _defaultExecutor;
     list[RISCVInstructSet.ori.index] = _defaultExecutor;
@@ -126,6 +126,42 @@ class RISCVCpu extends Cpu<RISCVCpuRegisters, RISCVCpuOpcode> {
 
   void _executeAdd(RISCVCpuOpcode opcode) {
     opcode.rd.write(opcode.rs1.read() + opcode.rs2.read());
+  }
+
+  void _executeSub(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() - opcode.rs2.read());
+  }
+
+  void _executeXor(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() ^ opcode.rs2.read());
+  }
+
+  void _executeOr(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() | opcode.rs2.read());
+  }
+
+  void _executeAnd(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() & opcode.rs2.read());
+  }
+
+  void _executeSll(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() << opcode.rs2.read());
+  }
+
+  void _executeSrl(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() >> opcode.rs2.read());
+  }
+
+  void _executeSra(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() >> opcode.rs2.read());
+  } 
+
+  void _executeSlt(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() < opcode.rs2.read() ? 1 : 0);
+  }
+
+  void _executeSltu(RISCVCpuOpcode opcode) {
+    opcode.rd.write(opcode.rs1.read() < opcode.rs2.read() ? 1 : 0);
   }
 
   void _executeAddi(RISCVCpuOpcode opcode) {
