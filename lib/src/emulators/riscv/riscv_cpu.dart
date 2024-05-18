@@ -1,7 +1,7 @@
+import 'package:femu/src/core/core.dart';
 import 'package:femu/src/ext/int_ext.dart';
 import 'package:femu/src/logger/logger.dart';
 
-import '../core/core.dart';
 import 'riscv.dart';
 
 /// 执行指令

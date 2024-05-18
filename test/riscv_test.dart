@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:femu/femu.dart';
+import 'package:femu/riscv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

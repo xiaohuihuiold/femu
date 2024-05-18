@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
-
-import '../core/core.dart';
+import 'package:femu/src/core/core.dart';
 
 /// OPCode工具
 class RISCVCpuOpcodes {

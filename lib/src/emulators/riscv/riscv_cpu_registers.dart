@@ -1,7 +1,6 @@
+import 'package:femu/src/core/core.dart';
 import 'package:femu/src/ext/int_ext.dart';
 import 'package:femu/src/logger/logger.dart';
-
-import '../core/core.dart';
 
 /// RISC-V寄存器
 class RISCVCpuRegisters extends CpuRegisters {
