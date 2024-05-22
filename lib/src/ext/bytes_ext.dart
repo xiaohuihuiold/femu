@@ -1,7 +1,13 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 /// ByteData扩展
 extension ByteDataExt on ByteData {
+  String getString(int offset, [int? end]) {
+    final bytes = getUint8List(offset, end);
+    return utf8.decode(bytes.sublist(0, bytes.indexOf(0)));
+  }
+
   Uint8List getUint8List(int offset, [int? end]) {
     return buffer.asUint8List(offset, end == null ? null : end - offset);
   }

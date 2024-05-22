@@ -112,3 +112,38 @@ class GBRom {
         '}';
   }
 }
+
+/// ROM构建
+class GBRomBuilder {
+  List<int> entry = [];
+  List<int> logo = List.filled(48, 0);
+  String title = '[Unknown]';
+  GBNewLicenseeCode newLicCode = GBNewLicenseeCode.None;
+  int sgbFlag = 0x00;
+  GBCartridgeType cartridgeType = GBCartridgeType.RomOnly;
+  int romSize = 0;
+  int ramSize = 0;
+  int destCode = 0x00;
+  GBOldLicenseeCode licCode = GBOldLicenseeCode.None;
+  int maskRomVersion = 0x00;
+  int headerChecksum = 0x00;
+  int globalChecksum = 0x00;
+
+  GBRom build() {
+    return GBRom._create(
+      entry: entry,
+      logo: logo,
+      title: title,
+      newLicCode: newLicCode,
+      sgbFlag: sgbFlag,
+      cartridgeType: cartridgeType,
+      romSize: romSize,
+      ramSize: ramSize,
+      destCode: destCode,
+      licCode: licCode,
+      maskRomVersion: maskRomVersion,
+      headerChecksum: headerChecksum,
+      globalChecksum: globalChecksum,
+    );
+  }
+}
